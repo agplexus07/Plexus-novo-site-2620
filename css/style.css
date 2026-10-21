@@ -492,3 +492,4 @@ strong { font-weight: 600; }
 .sound__vol::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: currentColor; }
 .sound__vol::-moz-range-thumb { width: 12px; height: 12px; border: 0; border-radius: 50%; background: currentColor; }
 @media (max-width: 600px) { .sound { bottom: 14px; } .sound__vol { width: 64px; } }
+.sound.is-fixed .sound__vol { display: none; }

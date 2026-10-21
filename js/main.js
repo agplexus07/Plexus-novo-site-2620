@@ -547,21 +547,11 @@
     if (audio.error) hideIfMissing();
     try { const v = localStorage.getItem('plexus-vol'); if (v !== null) level = +v; } catch (e) {}
     vol.value = Math.round(level * 100);
-    // iPhone/iPad ignoram audio.volume: nesses aparelhos o volume passa por um ganho do Web Audio
+    // iPhone/iPad ignoram audio.volume (o volume é o dos botões do aparelho): lá o controle deslizante some
     const fixedVolume = (() => { const t = new Audio(); t.volume = .5; return t.volume !== .5; })();
-    let ctx = null, gain = null;
-    const ensureGain = () => {
-      const AC = window.AudioContext || window.webkitAudioContext;
-      if (!fixedVolume || gain || !AC) return;
-      // toca como mídia, mesmo com o iPhone no modo silencioso (como um vídeo)
-      try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
-      ctx = new AC();
-      gain = ctx.createGain();
-      gain.gain.value = 0;
-      ctx.createMediaElementSource(audio).connect(gain).connect(ctx.destination);
-    };
+    if (fixedVolume) ui.classList.add('is-fixed');
     const out = { v: 0 };
-    const apply = () => { if (gain) gain.gain.value = out.v; else audio.volume = out.v; };
+    const apply = () => { audio.volume = out.v; };
     const paint = () => {
       vol.style.setProperty('--v', vol.value + '%');
       const on = !audio.paused && level > 0;
@@ -570,8 +560,6 @@
       btn.setAttribute('aria-label', on ? 'Pausar música' : 'Tocar música');
     };
     const play = () => {
-      ensureGain();
-      if (ctx && ctx.state !== 'running') ctx.resume();
       gsap.killTweensOf(out);
       out.v = 0; apply();
       return audio.play().then(() => {
@@ -621,7 +609,6 @@
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) audio.pause();
       else if (wantsPlay && ui.classList.contains('is-ready')) {
-        if (ctx) ctx.resume();
         audio.play().catch(() => {});
       }
       paint();
