@@ -1,6 +1,27 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.agenciaplexus.com.br" }],
+      "destination": "https://agenciaplexus.com.br/:path*",
+      "permanent": true
+    },
+    { "source": "/contato", "destination": "/#contato", "permanent": true },
+    { "source": "/contact", "destination": "/#contato", "permanent": true },
+    { "source": "/servicos", "destination": "/#novo", "permanent": true },
+    { "source": "/expertise", "destination": "/#novo", "permanent": true },
+    { "source": "/nossa-expertise", "destination": "/#novo", "permanent": true },
+    { "source": "/lab", "destination": "/#como", "permanent": true },
+    { "source": "/branding-lab", "destination": "/#como", "permanent": true },
+    { "source": "/portfolio", "destination": "/#quem", "permanent": true },
+    { "source": "/cases", "destination": "/#quem", "permanent": true },
+    { "source": "/sobre", "destination": "/#quem", "permanent": true },
+    { "source": "/about", "destination": "/#quem", "permanent": true },
+    { "source": "/feed/:path*", "destination": "/", "permanent": true },
+    { "source": "/blog/:path*", "destination": "/", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",

@@ -547,31 +547,53 @@
     if (audio.error) hideIfMissing();
     try { const v = localStorage.getItem('plexus-vol'); if (v !== null) level = +v; } catch (e) {}
     vol.value = Math.round(level * 100);
+    // iPhone/iPad ignoram audio.volume: nesses aparelhos o volume passa por um ganho do Web Audio
+    const fixedVolume = (() => { const t = new Audio(); t.volume = .5; return t.volume !== .5; })();
+    let ctx = null, gain = null;
+    const ensureGain = () => {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!fixedVolume || gain || !AC) return;
+      // toca como mídia, mesmo com o iPhone no modo silencioso (como um vídeo)
+      try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+      ctx = new AC();
+      gain = ctx.createGain();
+      gain.gain.value = 0;
+      ctx.createMediaElementSource(audio).connect(gain).connect(ctx.destination);
+    };
+    const out = { v: 0 };
+    const apply = () => { if (gain) gain.gain.value = out.v; else audio.volume = out.v; };
     const paint = () => {
       vol.style.setProperty('--v', vol.value + '%');
-      const on = !audio.paused && audio.volume > 0;
+      const on = !audio.paused && level > 0;
       ui.classList.toggle('is-playing', on);
       btn.setAttribute('aria-pressed', on);
       btn.setAttribute('aria-label', on ? 'Pausar música' : 'Tocar música');
     };
     const play = () => {
-      audio.volume = 0;
+      ensureGain();
+      if (ctx && ctx.state !== 'running') ctx.resume();
+      gsap.killTweensOf(out);
+      out.v = 0; apply();
       return audio.play().then(() => {
-        gsap.to(audio, { volume: level, duration: 2.5, ease: 'power1.out', onUpdate: paint });
+        gsap.to(out, { v: level, duration: 2.5, ease: 'power1.out', onUpdate: apply });
         paint();
       });
     };
-    // navegadores bloqueiam som antes da primeira interação: tenta já e, se bloqueado, toca no 1º toque/clique/tecla
-    const unlock = () => {
-      ['pointerdown', 'keydown', 'touchstart'].forEach(ev => window.removeEventListener(ev, unlock));
-      if (wantsPlay && audio.paused) play().catch(() => {});
+    // navegadores bloqueiam som antes da primeira interação: tenta já e, se bloqueado, toca no 1º toque/clique/tecla.
+    // No celular só o fim do toque (touchend/click) libera o som, então os ouvintes ficam até a música tocar de fato.
+    const GESTURES = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'];
+    const drop = () => GESTURES.forEach(ev => window.removeEventListener(ev, unlock, true));
+    const unlock = e => {
+      if (ui.contains(e.target)) return; // o próprio player cuida do toque nele
+      if (!wantsPlay || !audio.paused) { drop(); return; }
+      play().then(drop).catch(() => {});
     };
     const start = () => {
       if (audio.error) { hideIfMissing(); return; }
       if (!ui.isConnected) return;
       ui.classList.add('is-ready');
       play().catch(() => {
-        ['pointerdown', 'keydown', 'touchstart'].forEach(ev => window.addEventListener(ev, unlock, { passive: true }));
+        GESTURES.forEach(ev => window.addEventListener(ev, unlock, { capture: true, passive: true }));
         paint();
       });
     };
@@ -580,25 +602,28 @@
       if (audio.paused) {
         wantsPlay = true;
         if (level === 0) { level = .4; vol.value = 40; }
-        play().catch(() => {});
+        play().then(drop).catch(() => {});
       } else {
         wantsPlay = false;
-        gsap.to(audio, { volume: 0, duration: .4, onComplete: () => { audio.pause(); paint(); } });
+        drop();
+        gsap.killTweensOf(out);
+        gsap.to(out, { v: 0, duration: .4, onUpdate: apply, onComplete: () => { audio.pause(); paint(); } });
       }
     });
-    btn.addEventListener('pointerdown', e => e.stopPropagation());
-    vol.addEventListener('pointerdown', e => e.stopPropagation());
     vol.addEventListener('input', () => {
       level = vol.value / 100;
-      gsap.killTweensOf(audio);
-      audio.volume = level;
+      gsap.killTweensOf(out);
+      out.v = level; apply();
       try { localStorage.setItem('plexus-vol', level); } catch (e) {}
-      if (audio.paused && level > 0) { wantsPlay = true; play().catch(() => {}); }
+      if (audio.paused && level > 0) { wantsPlay = true; play().then(drop).catch(() => {}); }
       paint();
     });
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) audio.pause();
-      else if (wantsPlay && ui.classList.contains('is-ready')) audio.play().catch(() => {});
+      else if (wantsPlay && ui.classList.contains('is-ready')) {
+        if (ctx) ctx.resume();
+        audio.play().catch(() => {});
+      }
       paint();
     });
     paint();
