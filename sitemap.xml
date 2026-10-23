@@ -2,10 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://agenciaplexus.com.br/</loc>
-    <lastmod>2026-10-21</lastmod>
+    <lastmod>2026-10-23</lastmod>
     <image:image><image:loc>https://agenciaplexus.com.br/assets/img/duo.jpg</image:loc></image:image>
     <image:image><image:loc>https://agenciaplexus.com.br/assets/img/retrato-1.jpg</image:loc></image:image>
     <image:image><image:loc>https://agenciaplexus.com.br/assets/img/retrato-2.jpg</image:loc></image:image>
     <image:image><image:loc>https://agenciaplexus.com.br/assets/img/bastidores.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://agenciaplexus.com.br/servicos/branding</loc>
+    <lastmod>2026-10-23</lastmod>
+  </url>
+  <url>
+    <loc>https://agenciaplexus.com.br/servicos/gestao-de-redes-sociais</loc>
+    <lastmod>2026-10-23</lastmod>
+  </url>
+  <url>
+    <loc>https://agenciaplexus.com.br/servicos/trafego-pago</loc>
+    <lastmod>2026-10-23</lastmod>
+  </url>
+  <url>
+    <loc>https://agenciaplexus.com.br/servicos/criacao-de-sites</loc>
+    <lastmod>2026-10-23</lastmod>
+  </url>
+  <url>
+    <loc>https://agenciaplexus.com.br/servicos/analise-de-perfil</loc>
+    <lastmod>2026-10-23</lastmod>
   </url>
 </urlset>
