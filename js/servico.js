@@ -10,7 +10,6 @@
     return gsap.timeline({ defaults: { ease: 'expo.out' } })
       .from(title.lines, { yPercent: 105, duration: 1.2, stagger: .08 })
       .from(['.crumbs', '.svc-hero .tag', '.svc-hero__row > *'], { y: 24, opacity: 0, duration: 1, stagger: .08 }, '<.2')
-      .from('.svc-hero__symbol', { scale: .5, rotate: -30, opacity: 0, duration: 1.4 }, '<')
       .from('.nav', { yPercent: -100, opacity: 0, duration: 1 }, '<');
   };
 
@@ -20,7 +19,6 @@
       gsap.from(group.children, { y: 40, opacity: 0, duration: .9, stagger: .08, ease: 'power3.out', scrollTrigger: { trigger: group, start: 'top 85%' } });
     });
     gsap.from('.svc-think', { y: 30, rotate: -1.5, opacity: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: '.svc-think', start: 'top 90%' } });
-    gsap.to('.svc-hero__symbol', { rotation: 30, yPercent: 40, ease: 'none', scrollTrigger: { trigger: '.svc-hero', start: 'top top', end: 'bottom top', scrub: true } });
   };
 
   const boot = async () => {
