@@ -263,7 +263,7 @@
   ]
 }
   </script>
-  <link rel="stylesheet" href="css/style.css?v=22">
+  <link rel="stylesheet" href="css/style.css?v=23">
 </head>
 <body class="is-loading">
   <noscript><style>.loader{display:none}body.is-loading{overflow:auto}</style></noscript>
@@ -289,6 +289,19 @@
       <span class="sound__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
     </button>
     <input class="sound__vol" type="range" min="0" max="100" value="40" aria-label="Volume da música">
+  </div>
+
+  <!-- ============ AGENDA (Google Agenda: agendamento de horários) ============ -->
+  <div class="agenda" role="dialog" aria-modal="true" aria-labelledby="agenda-title" hidden>
+    <div class="agenda__backdrop" data-agenda-close></div>
+    <div class="agenda__panel">
+      <div class="agenda__head">
+        <p class="agenda__title" id="agenda-title">Agende uma conversa</p>
+        <a class="agenda__ext link-arrow" href="https://calendar.app.google/HLAfxFmW3PombLEZ8" target="_blank" rel="noopener">Abrir em nova aba ↗</a>
+        <button class="agenda__close" type="button" aria-label="Fechar agenda" data-agenda-close><span></span><span></span></button>
+      </div>
+      <iframe class="agenda__frame" title="Horários disponíveis da Plexus"></iframe>
+    </div>
   </div>
 
   <!-- ============ NAV ============ -->
@@ -590,7 +603,7 @@
             <p>Bora construir um posicionamento com a sua cara? Conta pra gente sobre o seu negócio. A primeira conversa é sem compromisso.</p>
             <div class="cta__btns">
               <a href="https://wa.me/5527995284994?text=Ol%C3%A1%2C%20Plexus!%20Quero%20posicionar%20minha%20marca." target="_blank" rel="noopener" class="btn btn--light magnetic"><span>Chamar no WhatsApp</span></a>
-              <a href="mailto:contato@agenciaplexus.com.br" class="btn btn--ghost magnetic"><span>Mandar um e-mail</span></a>
+              <a href="https://calendar.app.google/HLAfxFmW3PombLEZ8" target="_blank" rel="noopener" class="btn btn--ghost magnetic" data-agenda="https://calendar.google.com/calendar/appointments/schedules/AcZssZ26jcCSd_h6UToxT7CukYP5AJjDr09REw7a2ebz6rm_C9moBzdbb-aXDvY8b8NOs4b8Cp9maXAp?gv=true"><span>Agendar uma reunião</span></a>
             </div>
           </div>
         </section>
@@ -642,6 +655,6 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/DrawSVGPlugin.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/MotionPathPlugin.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Draggable.min.js"></script>
-  <script src="js/main.js?v=22"></script>
+  <script src="js/main.js?v=23"></script>
 </body>
 </html>

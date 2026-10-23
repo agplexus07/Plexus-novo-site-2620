@@ -618,6 +618,38 @@
   };
   const startMusic = music();
 
+  /* ---------- Agenda: abre o agendamento do Google Agenda numa janela por cima do site ---------- */
+  const agenda = () => {
+    const modal = $('.agenda'), frame = $('.agenda__frame'), panel = $('.agenda__panel');
+    const triggers = $$('[data-agenda]').filter(a => /^https:\/\//.test(a.dataset.agenda));
+    if (!triggers.length) return; // sem link de incorporação: o botão só abre a agenda em nova aba
+    let last = null;
+    const close = () => {
+      gsap.to(modal, { autoAlpha: 0, duration: .3, onComplete: () => {
+        modal.hidden = true;
+        document.body.style.overflow = '';
+        if (smoother) smoother.paused(false);
+        if (last) last.focus();
+      } });
+    };
+    const open = src => {
+      if (!frame.src) frame.src = src;
+      modal.hidden = false;
+      document.body.style.overflow = 'hidden';
+      if (smoother) smoother.paused(true);
+      gsap.fromTo(modal, { autoAlpha: 0 }, { autoAlpha: 1, duration: .3 });
+      gsap.fromTo(panel, { y: 40, scale: .97 }, { y: 0, scale: 1, duration: .6, ease: 'power3.out' });
+      $('.agenda__close').focus();
+    };
+    triggers.forEach(a => a.addEventListener('click', e => {
+      e.preventDefault();
+      last = a;
+      open(a.dataset.agenda);
+    }));
+    $$('[data-agenda-close]').forEach(el => el.addEventListener('click', close));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) close(); });
+  };
+
   /* ---------- Boot ---------- */
   const build = () => {
     heroInteractions();
@@ -634,6 +666,7 @@
     nav();
     magnetic();
     cursor();
+    agenda();
     themes();
     // recalcula na ordem da página (por causa das seções fixadas)
     ScrollTrigger.sort();
